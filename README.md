@@ -61,3 +61,9 @@ config.jsonファイルにそれぞれ必要な項目を追記していく
 * Windows11
 * 依存アプリ
     * Google Drive App
+
+## コンパイル
+
+```
+cargo build --release
+```
