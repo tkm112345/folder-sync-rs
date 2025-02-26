@@ -32,12 +32,12 @@ enum Commands {
 
 #[derive(Deserialize)]
 struct AppConfig {
-    bts : BgsConfig,
-    cdf : CgfConfig,
+    bts : BtsConfig,
+    cdf : CdfConfig,
 }
 
 #[derive(Deserialize)]
-struct BgsConfig {
+struct BtsConfig {
     source : String,
     destination : String,
     overwrite: bool,
@@ -45,7 +45,7 @@ struct BgsConfig {
 }
 
 #[derive(Deserialize)]
-struct CgfConfig {
+struct CdfConfig {
     source : String,
     destination : String,
 }
@@ -114,7 +114,7 @@ fn load_config(path : &str) -> Result<AppConfig, Box<dyn std::error::Error>> {
     Ok(config)
 }
 
-fn backup_to_ssd(config : &BgsConfig) -> Result<(),Box<dyn std::error::Error>> {
+fn backup_to_ssd(config : &BtsConfig) -> Result<(),Box<dyn std::error::Error>> {
     // println!("Source : {}, Destination : {}",config.bgs.source, config.bgs.destination);
     // println!("Overwrite : {}, Exclude : {:?}",config.bgs.overwrite, config.bgs.exclude);
 
@@ -186,7 +186,7 @@ fn copy_recursive(
 
 }
 
-fn create_folders(config : &CgfConfig) -> Result<(),Box<dyn std::error::Error>> {
+fn create_folders(config : &CdfConfig) -> Result<(),Box<dyn std::error::Error>> {
     // println!("Source : {}, Destination : {}",config.cgf.source, config.cgf.destination);
     let source_path = Path::new(&config.source);
     let destination_path = Path::new(&config.destination);
