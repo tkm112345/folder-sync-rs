@@ -10,7 +10,7 @@ use simplelog::*;
 #[clap(
     name = "sync-file-tool",
     about = "共有フォルダとバックアップ用のSSD間の同期ツール",
-    version = "0.0.1"
+    version = "0.1.0"
 )]
 struct Cli {
     #[clap(subcommand)]
