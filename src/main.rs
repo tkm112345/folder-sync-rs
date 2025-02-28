@@ -18,20 +18,22 @@ use crate::messages::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     
+    // 実行ファイルのディレクトリを取得
+    let exe_path = std::env::current_exe()?;
+    let exe_dir = exe_path.parent().expect(ERR_FAILED_TO_GET_DIRECTORY);
+
     // ログフォルダが存在しない場合は作成
     if !std::path::Path::new("./log").exists() {
         std::fs::create_dir_all("./log")?;
     }
-
     // ログの設定
-    log4rs::init_file("log4rs.yaml",Default::default())?;
-    
+    let log4rs_config_path = exe_dir.join("log4rs.yaml");
+    log4rs::init_file(log4rs_config_path,Default::default())?;
     info!("{}", LOG_START);
 
     let cli = Cli::parse();
     let config = load_config("config.json").expect(ERR_FAILED_TO_LOAD_CONFIG);
     let config = Arc::new(config);
-
     match &cli.command {
         Commands::BackupToSsd => {
             info!("{}", LOG_BACKUP_MODE);
