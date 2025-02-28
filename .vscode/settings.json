@@ -3,6 +3,7 @@
         "codegen",
         "serde",
         "simplelog",
-        "appenders"
+        "appenders",
+        "indicatif"
     ]
 }
