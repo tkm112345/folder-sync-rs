@@ -12,5 +12,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let dest_path = Path::new(&out_dir).join("../../../log4rs.yaml");
     fs::copy("./log4rs.yaml", dest_path)?;
 
+
+    // copy license
+    let dest_path = Path::new(&out_dir).join("../../../LICENSE");
+    fs::copy("./LICENSE", dest_path)?;
+
     Ok(())
 }
