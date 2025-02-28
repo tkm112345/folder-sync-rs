@@ -1,13 +1,13 @@
-use crate::config::BtsConfig;
+use crate::config::{BtsConfig,BtsConfigWrapper};
 use crate::utils::{count_files, copy_recursive};
 use indicatif::{ProgressBar, ProgressStyle};
 use log::error;
 use std::sync::Arc;
 use std::thread;
 
-pub fn execute_backup(bts_configs: &[BtsConfig]) -> Result<(), Box<dyn std::error::Error>> {
+pub fn execute_backup(bts_config_wrapper: &BtsConfigWrapper) -> Result<(), Box<dyn std::error::Error>> {
     let mut handles = vec![];
-    let total_files = count_files(bts_configs)?;
+    let total_files = count_files(&bts_config_wrapper.configs)?;
     let progress_bar = Arc::new(ProgressBar::new(total_files));
     progress_bar.set_style(
         ProgressStyle::default_bar()
@@ -16,13 +16,14 @@ pub fn execute_backup(bts_configs: &[BtsConfig]) -> Result<(), Box<dyn std::erro
     );
     progress_bar.set_message("Backing up");
 
-    for bts_config in bts_configs {
+    for bts_config in &bts_config_wrapper.configs {
         let bts_config = Arc::new(bts_config.clone());
         let progress_bar = Arc::clone(&progress_bar);
+        let exclude = bts_config_wrapper.exclude.clone();
         let handle = thread::spawn({
             let bts_config = Arc::clone(&bts_config);
             move || {
-                if let Err(err) = backup_to_ssd(&bts_config, &progress_bar) {
+                if let Err(err) = backup_to_ssd(&bts_config, &exclude,&progress_bar) {
                     error!("Backup failed : {}", err);
                 }
             }
@@ -37,7 +38,7 @@ pub fn execute_backup(bts_configs: &[BtsConfig]) -> Result<(), Box<dyn std::erro
     Ok(())
 }
 
-fn backup_to_ssd(config: &BtsConfig, progress_bar: &Arc<ProgressBar>) -> Result<(), Box<dyn std::error::Error>> {
+fn backup_to_ssd(config: &BtsConfig,exclude : &[String], progress_bar: &Arc<ProgressBar>) -> Result<(), Box<dyn std::error::Error>> {
     let source_path = std::path::Path::new(&config.source);
     let destination_path = std::path::Path::new(&config.destination);
 
@@ -45,7 +46,7 @@ fn backup_to_ssd(config: &BtsConfig, progress_bar: &Arc<ProgressBar>) -> Result<
         return Err(format!("Source folder does not exist : {}", config.source).into());
     }
 
-    copy_recursive(source_path, destination_path, config.overwrite, &config.exclude, progress_bar)?;
+    copy_recursive(source_path, destination_path, config.overwrite, exclude, progress_bar)?;
 
     Ok(())
 }

@@ -27,7 +27,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     info!("Start folder sync app");
 
     let cli = Cli::parse();
-    let config = load_config("./config.json").expect("Failed to load config.json");
+    let config = load_config("config.json").expect("Failed to load config.json");
     let config = Arc::new(config);
 
     match &cli.command {
