@@ -1,10 +1,12 @@
 // cspell:ignore simplelog PKGNAME
+use std::io::{self};
 use clap::{Parser,Subcommand};
 use serde::Deserialize;
 use std::{io::Read,io::Write,fs,thread};
 use std::path::Path;
 use log::{error,info, LevelFilter};
-use simplelog::*;
+// use simplelog::*;
+use log4rs;
 use std::sync::Arc;
 
 const VERSION :&str = env!("CARGO_PKG_VERSION");
@@ -69,19 +71,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .open("./log/main.log")?;
 
     // ログの設定
-    CombinedLogger::init(vec![
-        TermLogger::new(
-            LevelFilter::Info,
-            Config::default(),
-            TerminalMode::Mixed,
-            ColorChoice::Auto,
-        ),
-        WriteLogger::new(
-            LevelFilter::Info,
-            Config::default(),
-            file,
-        ),
-    ])?;
+    log4rs::init_file("log4rs.yaml",Default::default())?;
     
     info!("Start folder sync app");
 
