@@ -1,3 +1,4 @@
+// cspell:ignore simplelog PKGNAME
 use clap::{Parser,Subcommand};
 use serde::Deserialize;
 use std::{io::Read,io::Write,fs,thread};
