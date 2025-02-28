@@ -1,6 +1,6 @@
 [package]
 name = "folder-sync-rs"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 description = "共有フォルダとバックアップ用のSSD間の同期ツール"
 
