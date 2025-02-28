@@ -73,6 +73,7 @@ pub fn copy_recursive(
         if destination.exists() {
             if !overwrite {
                 info!("Skipping existing file: {}", destination.display());
+                progress_bar.inc(1);
                 return Ok(());
             }
 
@@ -83,6 +84,7 @@ pub fn copy_recursive(
                         && source.file_name() == destination.file_name()
                     {
                         info!("Skipping unchanged file: {}", destination.display());
+                        progress_bar.inc(1);
                         return Ok(());
                     }
                 }
