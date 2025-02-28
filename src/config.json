@@ -1,0 +1,21 @@
+{
+    "bts": {
+        "configs": [
+            {
+                "source": "",
+                "destination": "",
+                "overwrite": true
+            },
+            {
+                "source": "",
+                "destination": "",
+                "overwrite": true
+            }
+        ],
+        "exclude" : []
+    },
+    "cdf" : {
+        "source" : "",
+        "destination": ""
+    }
+}
