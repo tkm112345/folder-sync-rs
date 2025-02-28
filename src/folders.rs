@@ -1,4 +1,5 @@
 use crate::config::CdfConfig;
+use crate::messages::*;
 use std::path::Path;
 use std::fs;
 
@@ -9,7 +10,7 @@ pub fn execute_create_folders(config : &CdfConfig) -> Result<(),Box<dyn std::err
 
     // ソースフォルダが存在するか確認
     if !source_path.exists(){
-        return Err(format!("Source folder does not exist : {}",config.source).into());
+        return Err(format!("{}",ERR_SOURCE_FOLDER_NOT_EXIST.replace("{}",&config.source)).into());
     }
     
     // フォルダ構成を再帰的に作成

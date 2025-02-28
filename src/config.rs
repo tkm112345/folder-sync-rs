@@ -1,3 +1,4 @@
+use crate::messages::*;
 use serde::Deserialize;
 use std::{io::Read,fs};
 
@@ -30,7 +31,7 @@ pub struct CdfConfig {
 pub fn load_config(file_name : &str) -> Result<AppConfig, Box<dyn std::error::Error>> {
     // 実行ファイルのディレクトリを取得
     let exe_path = std::env::current_exe()?;
-    let exe_dir = exe_path.parent().expect("Failed to get executable directory");
+    let exe_dir = exe_path.parent().expect(ERR_FAILED_TO_GET_DIRECTORY);
 
 
     // config.jsonのパスを生成

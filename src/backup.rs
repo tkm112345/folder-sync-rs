@@ -1,5 +1,6 @@
 use crate::config::{BtsConfig,BtsConfigWrapper};
 use crate::utils::{count_files, copy_recursive};
+use crate::messages::*;
 use indicatif::{ProgressBar, ProgressStyle};
 use log::error;
 use std::sync::Arc;
@@ -14,7 +15,7 @@ pub fn execute_backup(bts_config_wrapper: &BtsConfigWrapper) -> Result<(), Box<d
             .template("{msg} [{bar:40.cyan/blue}] {pos}/{len} ({percent}%)")?
             .progress_chars("#>-"),
     );
-    progress_bar.set_message("Backing up");
+    progress_bar.set_message(MSG_BACKING_UP);
 
     for bts_config in &bts_config_wrapper.configs {
         let bts_config = Arc::new(bts_config.clone());
@@ -24,7 +25,7 @@ pub fn execute_backup(bts_config_wrapper: &BtsConfigWrapper) -> Result<(), Box<d
             let bts_config = Arc::clone(&bts_config);
             move || {
                 if let Err(err) = backup_to_ssd(&bts_config, &exclude,&progress_bar) {
-                    error!("Backup failed : {}", err);
+                    error!("Backup failed: {}", err);
                 }
             }
         });
@@ -33,7 +34,7 @@ pub fn execute_backup(bts_config_wrapper: &BtsConfigWrapper) -> Result<(), Box<d
     for handle in handles {
         handle.join().unwrap();
     }
-    progress_bar.finish_with_message("Backup complete");
+    progress_bar.finish_with_message(MSG_BACKUP_COMPLETE);
 
     Ok(())
 }

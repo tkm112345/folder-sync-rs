@@ -4,6 +4,7 @@ mod commands;
 mod backup;
 mod folders;
 mod utils;
+mod messages;
 
 use clap::Parser;
 use log::info;
@@ -13,6 +14,7 @@ use std::sync::Arc;
 
 use crate::config::load_config;
 use crate::commands::{Cli,Commands};
+use crate::messages::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     
@@ -24,27 +26,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ログの設定
     log4rs::init_file("log4rs.yaml",Default::default())?;
     
-    info!("Start folder sync app");
+    info!("{}", LOG_START);
 
     let cli = Cli::parse();
-    let config = load_config("config.json").expect("Failed to load config.json");
+    let config = load_config("config.json").expect(ERR_FAILED_TO_LOAD_CONFIG);
     let config = Arc::new(config);
 
     match &cli.command {
         Commands::BackupToSsd => {
-            info!("Backup mode");
+            info!("{}", LOG_BACKUP_MODE);
             backup::execute_backup(&config.bts)?;
         }
         Commands::CreateFolders => {
-            info!("Create folders mode");
+            info!("{}", LOG_CREATE_FOLDERS_MODE);
             folders::execute_create_folders(&config.cdf)?;
         }
     }
     
-    info!("Finish folder sync app");
+    info!("{}", LOG_FINISH);
 
     // ユーザに対して、プログラムの最後にEnterキーの入力を待つ
-    println!("Press Enter to exit...");
+    println!("{}", MSG_PRESS_ENTER_TO_EXIT);
     let mut input = String::new();
     io::stdout().flush()?; // 標準出力をフラッシュして、メッセージが確実に表示されるようにする
     io::stdin().read_line(&mut input)?;
