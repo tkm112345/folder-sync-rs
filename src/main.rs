@@ -1,10 +1,11 @@
 use clap::{Parser,Subcommand};
 use serde::Deserialize;
-use std::io::Read;
-use std::fs;
+use std::{io::Read,io::Write,fs,thread};
 use std::path::Path;
 use log::{error,info, LevelFilter};
 use simplelog::*;
+use std::sync::Arc;
+
 const VERSION :&str = env!("CARGO_PKG_VERSION");
 const PKGNAME: &str = env!("CARGO_PKG_NAME");
 const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
@@ -35,11 +36,11 @@ enum Commands {
 
 #[derive(Deserialize)]
 struct AppConfig {
-    bts : BtsConfig,
+    bts : Vec<BtsConfig>,
     cdf : CdfConfig,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize,Clone)]
 struct BtsConfig {
     source : String,
     destination : String,
@@ -85,14 +86,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let cli = Cli::parse();
     let config = load_config("./config.json").expect("Failed to load config.json");
+    let config = Arc::new(config);
 
     match &cli.command {
         Commands::BackupToSsd => {
             if cli.verbose {
                 info!("Backup mode");
             }
-            if let Err(err) = backup_to_ssd(&config.bts){
-                error!("Backup  failed: {}", err);
+            let mut handles = vec![];
+            for bts_config in &config.bts {
+                let bts_config = Arc::new(bts_config.clone());
+                let handle = thread::spawn({
+                    let bts_config = Arc::clone(&bts_config);
+                    move || {
+                        if let Err(err) = backup_to_ssd(&bts_config){
+                            error!("Backup failed : {}",err);
+                        }
+                    }
+                });
+                handles.push(handle);
+            }
+            for handle in handles {
+                handle.join().unwrap();
             }
         }
         Commands::CreateFolders => {

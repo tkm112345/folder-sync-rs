@@ -1,10 +1,18 @@
 {
-    "bts" : {
-        "source" : "",
-        "destination" : "",
-        "overwrite" : true,
-        "exclude" : []
-    },
+    "bts": [
+        {
+            "source": "",
+            "destination": "",
+            "overwrite": true,
+            "exclude": []
+        },
+        {
+            "source": "",
+            "destination": "",
+            "overwrite": true,
+            "exclude": []
+        }
+    ],
     "cdf" : {
         "source" : "",
         "destination": ""
