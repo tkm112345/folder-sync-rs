@@ -43,19 +43,22 @@ folder-sync-rs.exe -bts
 config.jsonファイルにそれぞれ必要な項目を追記していく
 | 項目(キー) | 項目名称 | 項目(値)入力例 | 項目(値)の型 | 説明 |
 |---|---|---|---|---|
-| bgs | バックアップモードでの設定情報 |  | dist | GドライブからCドライブへ、CドライブからSSDへのバックアップモードで使用 |
+| bts | バックアップモードでの設定情報 |  | dist | GドライブからCドライブへ、CドライブからSSDへのバックアップモードで使用 |
 | - source | バックアップ元のパスを指定 | G:\マイドライブ\MyWork | str | GドライブやCドライブのパスを指定 |
 | - destination | バックアップ先のパスを指定 | C:\Users\<user>\Desktop\MyWork | str | CドライブやSSDのパスを指定 |
 | - overwrite | 上書き保存するかどうか | true | bool | 同じファイルがあった時に上書きするかどうか true >> 上書きする |
 | - exclude | 除外するファイルやフォルダ |  | list[str] |  |
-| cgf | フォルダ構成作成モードでの設定情報 |  | dist | SSDからCドライブへ、CドライブからGドライブへのフォルダ構成作成モードで使用 |
+| cdf | フォルダ構成作成モードでの設定情報 |  | dist | SSDからCドライブへ、CドライブからGドライブへのフォルダ構成作成モードで使用 |
 | - source | フォルダ構成の展開元のパスを指定 | C:\Users\<user>\Desktop\MyWork | str | CドライブやSSDのパスを指定 |
 | - destination | フォルダ構成の展開先のパスを指定 | G:\マイドライブ\MyWork | str | GドライブやCドライブのパスを指定 |
 
 ## 使用方法
 
-1. folder-sync-rs.exe と同じ階層のconfig.json に必要なパラメータを記入する
-2. ターミナルより引数を渡して実行
+1. folder-sync-rs.exeと同じ階層で、以下の2つの設定ファイルを配置する
+    * config.json
+    * log4rs.yaml 
+2. config.json に必要なパラメータを記入する
+3. ターミナルより -bts or -cdf のどちらかの引数を渡して実行
 
 ## 実行環境
 * Windows11
