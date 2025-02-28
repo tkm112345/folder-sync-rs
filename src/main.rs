@@ -122,6 +122,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     
     info!("Finish folder sync app");
+
+    // ユーザに対して、プログラムの最後にEnterキーの入力を待つ
+    println!("Press Enter to exit...");
+    let mut input = String::new();
+    io::stdout().flush()?; // 標準出力をフラッシュして、メッセージが確実に表示されるようにする
+    io::stdin().read_line(&mut input)?;
+
     Ok(())
 }
 
