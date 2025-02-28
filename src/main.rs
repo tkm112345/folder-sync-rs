@@ -5,12 +5,15 @@ use std::fs;
 use std::path::Path;
 use log::{error,info, LevelFilter};
 use simplelog::*;
+const VERSION :&str = env!("CARGO_PKG_VERSION");
+const PKGNAME: &str = env!("CARGO_PKG_NAME");
+const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 
 #[derive(Parser)]
 #[clap(
-    name = "sync-file-tool",
-    about = "共有フォルダとバックアップ用のSSD間の同期ツール",
-    version = "0.1.0"
+    name = PKGNAME,
+    about = DESCRIPTION,
+    version = VERSION
 )]
 struct Cli {
     #[clap(subcommand)]

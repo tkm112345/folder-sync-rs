@@ -2,6 +2,7 @@
 name = "folder-sync-rs"
 version = "0.1.1"
 edition = "2021"
+description = "共有フォルダとバックアップ用のSSD間の同期ツール"
 
 [profile.release]
 opt-level = 3 # 最適化レベル3
