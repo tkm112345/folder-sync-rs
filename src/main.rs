@@ -11,6 +11,7 @@ use log::info;
 use std::io::{self, Write};
 use log4rs;
 use std::sync::Arc;
+use std::time::Instant;
 
 use crate::config::load_config;
 use crate::commands::{Cli,Commands};
@@ -18,6 +19,9 @@ use crate::messages::*;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     
+    // 処理時間の計測開始
+    let start = Instant::now();
+
     // 実行ファイルのディレクトリを取得
     let exe_path = std::env::current_exe()?;
     let exe_dir = exe_path.parent().expect(ERR_FAILED_TO_GET_DIRECTORY);
@@ -46,6 +50,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     
     info!("{}", LOG_FINISH);
+
+    // 処理時間計測終了
+    let end = Instant::now();
+    let duration = end.duration_since(start);
+    let msg_duration = format!("{:?}", duration); // Durationを文字列に変換
+    let result = MSG_EXECUTE_TIME.replace("{}", &msg_duration);
+    info!("{}", result.as_str()); // 実行時間ログ追記
+    println!("{}", result.as_str()); // 標準出力にも表示
 
     // ユーザに対して、プログラムの最後にEnterキーの入力を待つ
     println!("{}", MSG_PRESS_ENTER_TO_EXIT);
