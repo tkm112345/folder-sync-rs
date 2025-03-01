@@ -35,18 +35,61 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     log4rs::init_file(log4rs_config_path,Default::default())?;
     info!("{}", LOG_START);
 
-    let cli = Cli::parse();
+    let mut cli = Cli::parse();
     let config = load_config("config.json").expect(ERR_FAILED_TO_LOAD_CONFIG);
     let config = Arc::new(config);
+
+    // コマンドライン引数のparse
+    if cli.command.is_none() {
+        loop {
+            println!("Choose mode");
+            println!("1 > Backup mode");
+            println!("2 > Create folders mode");
+            print!("Enter mode number:  ");
+            io::stdout().flush()?;
+
+            let mut input = String::new();
+            match io::stdin().read_line(&mut input){
+                Ok(_) => {
+                    let mode = input.trim().parse::<u32>();
+                    match mode {
+                        Ok(1) => {
+                            cli.command = Some(Commands::BackupToSsd);
+                            break;
+                        }
+                        Ok(2) => {
+                            cli.command = Some(Commands::CreateFolders);
+                            break;
+                        }
+                        _ => {
+                            println!("Invalid mode number. Please enter 1 or 2");
+                        }
+                    }
+                }
+                Err(e) => {
+                    if e.kind() == std::io::ErrorKind::UnexpectedEof {
+                        println!("Ctrl + C detected. Exiting.");
+                        return Ok(());
+                    } else {
+                        eprintln!("Error reading input : {}",e);
+                        return Err(Box::new(e));
+                    }
+                }
+            }
+        }
+    }
+
+
     match &cli.command {
-        Commands::BackupToSsd => {
+        Some(Commands::BackupToSsd) => {
             info!("{}", LOG_BACKUP_MODE);
             backup::execute_backup(&config.bts)?;
         }
-        Commands::CreateFolders => {
+        Some(Commands::CreateFolders) => {
             info!("{}", LOG_CREATE_FOLDERS_MODE);
             folders::execute_create_folders(&config.cdf)?;
         }
+        None => unreachable!(),
     }
     
     info!("{}", LOG_FINISH);

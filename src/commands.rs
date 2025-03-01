@@ -25,7 +25,7 @@ const DESCRIPTION: &str     = env!("CARGO_PKG_DESCRIPTION");
 pub struct Cli {
     /// Subcommand to execute.
     #[clap(subcommand)]
-    pub command : Commands,
+    pub command : Option<Commands>,
 
     /// Enable verbose logging.
     #[clap(short,long,help = "詳細なログを出力")]
