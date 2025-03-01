@@ -97,7 +97,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 処理時間計測終了
     let end = Instant::now();
     let duration = end.duration_since(start);
-    let msg_duration = format!("{:?}", duration); // Durationを文字列に変換
+    let duration_secs = duration.as_secs_f64(); // f64 型の秒数に変換
+    let msg_duration = format!("{:.1}", duration_secs); // Durationを文字列に変換
     let result = MSG_EXECUTE_TIME.replace("{}", &msg_duration);
     info!("{}", result.as_str()); // 実行時間ログ追記
     println!("{}", result.as_str()); // 標準出力にも表示
