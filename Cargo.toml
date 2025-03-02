@@ -10,8 +10,6 @@ lto = true    # Link Time Optimizationを有効化
 codegen-units = 1 # コード生成ユニット数を1に設定
 panic = 'abort' # パニック時にプログラムを終了
 
-[build-dependencies]
-
 [dependencies]
 clap = { version = "4.5.31", features = ["derive"] }
 indicatif = "0.17.11"
