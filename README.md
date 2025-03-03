@@ -62,8 +62,6 @@ config.jsonファイルにそれぞれ必要な項目を追記していく
 
 ## 実行環境
 * Windows11
-* 依存アプリ
-    * Google Drive App
 
 ## コンパイル
 
