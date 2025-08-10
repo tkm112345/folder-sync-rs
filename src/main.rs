@@ -80,6 +80,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
 
+    // // デバッグログを追加して、読み込んだパスを確認
+    // for bts_config in &config.bts.configs {
+    //     info!("Loaded source path: {}", bts_config.source);
+    //     info!("Loaded destination path: {}", bts_config.destination);
+    // }
+
+
     match &cli.command {
         Some(Commands::BackupToSsd) => {
             info!("{}", LOG_BACKUP_MODE);

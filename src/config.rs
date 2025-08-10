@@ -6,7 +6,7 @@
 use crate::messages::*;
 use serde::Deserialize;
 use std::{io::Read,fs};
-
+use std::path::Path;
 /// Application configuration structure.
 ///
 /// This struct represents the overall application configuration, including backup and folder creation settings.
@@ -73,16 +73,10 @@ pub struct CdfConfig {
 /// * Returns an error if the configuration file cannot be opened.
 /// * Returns an error if the configuration file cannot be read.
 /// * Returns an error if the configuration file cannot be parsed as JSON.
-pub fn load_config(file_name : &str) -> Result<AppConfig, Box<dyn std::error::Error>> {
-    // Get the executable directory
-    let exe_path = std::env::current_exe()?;
-    let exe_dir = exe_path.parent().expect(ERR_FAILED_TO_GET_DIRECTORY);
-
-    // Generate the config.json path
-    let config_path = exe_dir.join(file_name);
-    let mut file = fs::File::open(config_path)?;
+pub fn load_config(path : &Path) -> Result<AppConfig, Box<dyn std::error::Error>> {
+    let mut file = fs::File::open(path)?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
-    let config : AppConfig = serde_json::from_str(&contents)?;
+    let config: AppConfig = serde_json::from_str(&contents)?;
     Ok(config)
 }

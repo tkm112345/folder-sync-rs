@@ -7,9 +7,10 @@ use crate::config::{BtsConfig,BtsConfigWrapper};
 use crate::utils::{count_files, copy_recursive};
 use crate::messages::*;
 use indicatif::{ProgressBar, ProgressStyle};
-use log::error;
+use log::{error,info};
 use std::sync::Arc;
 use std::thread;
+use std::path::Path;
 
 /// Executes the backup process based on the provided configuration wrapper.
 ///
@@ -82,13 +83,23 @@ pub fn execute_backup(bts_config_wrapper: &BtsConfigWrapper) -> Result<(), Box<d
 /// * Returns an error if the source folder does not exist.
 /// * Returns an error if the recursive copy operation fails.
 fn backup_to_ssd(config: &BtsConfig,exclude : &[String], progress_bar: &Arc<ProgressBar>) -> Result<(), Box<dyn std::error::Error>> {
-    let source_path = std::path::Path::new(&config.source);
-    let destination_path = std::path::Path::new(&config.destination);
+    let source_path = Path::new(&config.source);
+    let destination_path = Path::new(&config.destination);
+
+    // デバッグログを追加して、パス名を確認する
+    // info!("Source path: {}", source_path.display());
+    // info!("Destination path: {}", destination_path.display());
 
     if !source_path.exists() {
         return Err(format!("Source folder does not exist : {}", config.source).into());
     }
 
+    // destinationのルートディレクトリを先に作成する
+    if !destination_path.exists(){
+        std::fs::create_dir_all(destination_path)?;
+    }
+
+    // `copy_recursive`を直接呼び出すように修正
     copy_recursive(source_path, destination_path, config.overwrite, exclude, progress_bar)?;
 
     Ok(())
