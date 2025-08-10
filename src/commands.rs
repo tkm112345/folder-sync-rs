@@ -30,6 +30,10 @@ pub struct Cli {
     /// Enable verbose logging.
     #[clap(short,long,help = "詳細なログを出力")]
     pub verbose : bool,
+
+    /// Specify a configuration file.
+    #[clap(short, long, help = "設定ファイルを指定")]
+    pub file: Option<String>,
 }
 
 /// Available subcommands.

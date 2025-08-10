@@ -16,6 +16,7 @@ use std::time::Instant;
 use crate::config::load_config;
 use crate::commands::{Cli,Commands};
 use crate::messages::*;
+use std::path::PathBuf;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     
@@ -36,7 +37,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     info!("{}", LOG_START);
 
     let mut cli = Cli::parse();
-    let config = load_config("config.json").expect(ERR_FAILED_TO_LOAD_CONFIG);
+
+    // 設定ファイルのパスを決定
+    let config_path: PathBuf = if let Some(file) = &cli.file {
+        // -f オプションが指定された場合
+        PathBuf::from(file)
+    } else {
+        // -f オプションが指定されない場合、デフォルトのconfig.jsonを使用
+        exe_dir.join("config.json")
+    };
+
+
+    let config = load_config(&config_path).expect(ERR_FAILED_TO_LOAD_CONFIG);
     let config = Arc::new(config);
 
     // コマンドライン引数のparse
