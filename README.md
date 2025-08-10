@@ -17,8 +17,9 @@
 
 ### バックアップ作成機能
 
-* 取り込み用のフォルダを指定してC driveに上書き保存
-(可能であれば、フォルダ名とタイムスタンプ、容量が一致していたら更新はスキップ)
+* 取り込み用のフォルダを指定して上書き保存
+* フォルダ名とタイムスタンプ、容量が一致していたら更新はスキップ
+* .gdoc、.gsheet、.gslidesなどのGoogleショートカットファイルはスキップする
 
 ## コマンドライン引数
 
@@ -26,7 +27,7 @@
 
 -cdf or --create-destination-folders
 
-```
+```shell
 folder-sync-rs.exe -cdf
 ```
 
@@ -34,13 +35,23 @@ folder-sync-rs.exe -cdf
 
 -bts or --backup-to-ssd
 
-```
+```shell
 folder-sync-rs.exe -bts
+```
+
+### 設定ファイル指定機能
+
+`-f` or `--file`
+
+デフォルトのconfig.jsonではなく、別の設定ファイルを指定して実行できます。
+
+```shell
+folder-sync-rs.exe -f my-config.json -bts
 ```
 
 ## 設定ファイル
 
-config.jsonファイルにそれぞれ必要な項目を追記していく
+`config.json`ファイルにそれぞれ必要な項目を追記していく
 | 項目(キー) | 項目名称 | 項目(値)入力例 | 項目(値)の型 | 説明 |
 |---|---|---|---|---|
 | bts | バックアップモードでの設定情報 |  | dist | GドライブからCドライブへ、CドライブからSSDへのバックアップモードで使用 |
@@ -54,11 +65,11 @@ config.jsonファイルにそれぞれ必要な項目を追記していく
 
 ## 使用方法
 
-1. folder-sync-rs.exeと同じ階層で、以下の2つの設定ファイルを配置する
-    * config.json
-    * log4rs.yaml 
-2. config.json に必要なパラメータを記入する
-3. ターミナルより -bts or -cdf のどちらかの引数を渡して実行
+1. `folder-sync-rs.exe`と同じ階層で、以下の2つの設定ファイルを配置する
+    * `config.json`
+    * `log4rs.yaml` 
+2. `config.json` に必要なパラメータを記入する
+3. ターミナルより `-bts` or `-cdf` のどちらかの引数を渡して実行
 
 ## 実行環境
 * Windows11
