@@ -5,7 +5,7 @@
 
 use indicatif::ProgressBar;
 use log::info;
-use std::path::Path;
+use std::path::{Path,PathBuf};
 use std::sync::{mpsc, Arc};
 use std::thread;
 
@@ -33,7 +33,7 @@ pub fn count_files(bts_configs: &[BtsConfig]) -> Result<u64, Box<dyn std::error:
 
     for config in bts_configs {
         let tx = tx.clone();
-        let source_path = Path::new(&config.source).to_path_buf();
+        let source_path = PathBuf::from(&config.source);
         let handle = thread::spawn(move || {
             let count = count_files_recursive(&source_path).unwrap_or(0);
             tx.send(count).unwrap();
@@ -114,21 +114,49 @@ pub fn copy_recursive(
     exclude: &[String],
     progress_bar: &Arc<ProgressBar>
 ) -> Result<(), Box<dyn std::error::Error>> {
-    if exclude.iter().any(|e| source.ends_with(e)) {
-        info!("Skipping excludes item : {}", source.display());
-        return Ok(());
+
+
+    // デバッグログを追加
+    info!("Processing: {}", source.display());
+
+    // Google ドキュメント,スプレッドシート,スライドのショートカットをスキップ
+    if let Some(extension) = source.extension().and_then(|s| s.to_str()){
+        match extension {
+            "gdoc" | "gsheet" | "gslides" => {
+                info!("Skipping Google shortcut file : {}", source.display());
+                progress_bar.inc(1);
+                return Ok(());
+            }
+            _ => {}
+        }
     }
 
-    if source.is_dir() {
-        std::fs::create_dir_all(destination)?;
 
+    // sourceがディレクトリの場合に先にdestinationディレクトリを作成
+    if source.is_dir() {
+        // destinationディレクトリが存在しない場合は作成
+        if !destination.exists() {
+            std::fs::create_dir_all(destination)?;
+        }
+
+        // 子要素を再帰的に処理
         for entry in std::fs::read_dir(source)? {
             let entry = entry?;
             let path = entry.path();
             let destination = destination.join(entry.file_name());
             copy_recursive(&path, &destination, overwrite, exclude, progress_bar)?;
         }
-    } else {
+    } else { // sourceがファイルの場合
+        if exclude.iter().any(|e| source.ends_with(e)) {
+            info!("Skipping excluded path: {}", source.display());
+            return Ok(());
+        }
+
+        if !source.exists() {
+            info!("Source path does not exist: {}", source.display());
+            return Ok(());
+        }
+
         if destination.exists() {
             if !overwrite {
                 info!("Skipping existing file: {}", destination.display());
@@ -149,11 +177,11 @@ pub fn copy_recursive(
                 }
             }
         }
-
+        
         std::fs::copy(source, destination)?;
         info!("Copied: {} to {}", source.display(), destination.display());
         progress_bar.inc(1);
     }
-
+    
     Ok(())
 }
